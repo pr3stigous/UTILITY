@@ -1,5 +1,5 @@
 """
-fetching a website and scraping its html links
+fetching a website and scraping its html links - updated to included two different use cases
 """
 
 import requests
@@ -15,11 +15,26 @@ r = requests.get(url)
 # Create a BeautifulSoup object and specify the parser
 soup = BeautifulSoup(r.text, 'html.parser')
 
-# Find all list items with class 'category'
+# Find both single links and categories
+single_items = soup.find_all('li')
 categories = soup.find_all('li', class_='category')
 
 # Create a dictionary to store the data
 data = {}
+
+for item in single_items:
+    # Extract the header/link text
+    header_element = item.find('a', class_='navigation-link')
+
+    # Check if the header element was found
+    if header_element is not None:
+        header = header_element.text
+        # Extract and print the link
+        href = header_element.get('href')
+        print(f'Link: {href}')
+
+        # Store the link
+        data[header] = [href]
 
 for category in categories:
     # Extract the header
@@ -45,7 +60,7 @@ for category in categories:
             data[header].append(href)
 
 # Save the data to a JSON file
-with open('links_ref.json', 'w') as f:
+with open('links_test5.json', 'w') as f:
     json.dump(data, f)
 
 
