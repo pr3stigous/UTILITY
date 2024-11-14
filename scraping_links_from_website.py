@@ -1,13 +1,15 @@
 """
-fetching a website and scraping its html links - updated to included two different use cases
+fetching a website and scraping its html links - updated to included a few different use cases
 """
+
+###add this code to github
 
 import requests
 from bs4 import BeautifulSoup
 import json
 
 # URL of the webpage you want to get
-url = "https://ods.od.nih.gov/factsheets/list-all/"
+url = "https://www.hpb.gov.sg/healthy-living/food-beverage"
 
 # Send HTTP request to the specified URL and save the response from server in a response object called r
 r = requests.get(url)
@@ -18,6 +20,9 @@ soup = BeautifulSoup(r.text, 'html.parser')
 # Find both single links and categories
 single_items = soup.find_all('li')
 categories = soup.find_all('li', class_='category')
+
+# Find all divs with class 'col-sm-4'
+divs = soup.find_all('div', class_='col-sm-4')
 
 # Create a dictionary to store the data
 data = {}
@@ -59,8 +64,22 @@ for category in categories:
             # Add the link to the list for this category
             data[header].append(href)
 
+# Iterate over the divs
+for div in divs:
+    # Find the anchor tag
+    a = div.find('a')
+    
+    # Get the required details
+    link = a.get('href')
+    img = a.find('img').get('src')
+    title = a.find('p').text
+
+    # Store the values
+    data[title] = {'link': link, 'image': img}
+
+
 # Save the data to a JSON file
-with open('links_test5.json', 'w') as f:
+with open('links_test8.json', 'w') as f:
     json.dump(data, f)
 
 
