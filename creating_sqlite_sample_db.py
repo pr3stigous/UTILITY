@@ -36,8 +36,8 @@ for table in tables:
     # Create the table in the output database
     cursor_output.execute(schema)
     
-    # Copy the first 20 rows from the input to the output
-    cursor_input.execute(f"SELECT * FROM {table_name} LIMIT 20;")
+    # Copy random 20 rows from the input to the output
+    cursor_input.execute(f"SELECT * FROM {table_name} ORDER BY RANDOM() LIMIT 20;")
     rows = cursor_input.fetchall()
     
     # Get column names
